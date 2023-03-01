@@ -15,19 +15,21 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
-import com.tech.whatsappclone.Model.UserSignup
+import com.tech.whatsappclone.Model.UserModel
 import com.tech.whatsappclone.databinding.ActivitySignUpBinding
 
 class SignUpActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivitySignUpBinding
     private lateinit var auth: FirebaseAuth
-    private lateinit var database: DatabaseReference
+    private lateinit var database: FirebaseDatabase
     private lateinit var googleSignInClient: GoogleSignInClient
     private lateinit var gso: GoogleSignInOptions
 
@@ -56,7 +58,7 @@ class SignUpActivity : AppCompatActivity() {
         }
 
         auth = Firebase.auth
-        database = Firebase.database.reference
+        database = FirebaseDatabase.getInstance()
 
         binding.btnSignup.setOnClickListener {
             mProgressDialog.show()
@@ -67,16 +69,16 @@ class SignUpActivity : AppCompatActivity() {
 
 
                 if (task.isSuccessful) {
-                    val userSignup = UserSignup(
+                    val userSignup = UserModel.UserSignup(
                         binding.etuserName.text.toString(),
                         binding.etemail.text.toString(),
                         binding.etpassword.text.toString()
                     )
 
-                    val uid = Firebase.auth.uid
+                    val uid = auth.uid
                     if (uid != null) {
                         Log.d("@@@@", uid)
-                        database.child("Users").child(uid).setValue(userSignup)
+                        database.reference.child("Users").child(uid).setValue(userSignup)
                             .addOnSuccessListener {
                                 Toast.makeText(
                                     this,
@@ -145,10 +147,19 @@ class SignUpActivity : AppCompatActivity() {
         val credential = GoogleAuthProvider.getCredential(account.idToken, null)
         auth.signInWithCredential(credential).addOnCompleteListener {
             if (it.isSuccessful) {
-                startActivity(Intent(this, MainActivity::class.java))
+                startActivity(Intent(this, MainActivity::class.java).setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT))
                 Log.d("@@@@", "signInWithCredential success")
                 Log.d("@@@@", account.displayName.toString())
                 Log.d("@@@@", account.email.toString())
+
+                //store data in database of google login
+                val user : FirebaseUser? = auth.currentUser
+                val userModel = UserModel()
+                userModel.setUserId(user?.uid)
+                userModel.setUserName(user?.displayName)
+                userModel.setProfilePic(user?.photoUrl.toString())
+
+                database.reference.child("Users").child(user?.uid.toString()).setValue(userModel)
             } else {
                 Log.d("@@@@", "signInWithCredential failed")
                 Toast.makeText(this, it.exception.toString(), Toast.LENGTH_SHORT).show()

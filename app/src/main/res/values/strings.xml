@@ -13,4 +13,8 @@
     <string name="settings">Settings</string>
     <string name="logout">Logout</string>
     <string name="your_web_client_id">155031488126-q4b8935vs12i7m5jg0niu8a7bc59d9jk.apps.googleusercontent.com</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="todo">TODO</string>
+    <string name="enter_your_message">Enter your message</string>
 </resources>
