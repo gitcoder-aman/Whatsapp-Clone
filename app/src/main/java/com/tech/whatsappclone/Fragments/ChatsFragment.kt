@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
@@ -24,7 +25,7 @@ class ChatsFragment : Fragment() {
     private lateinit var binding: FragmentChatsBinding
 
     var list:ArrayList<UserModel> = ArrayList()
-    private lateinit var database: DatabaseReference
+    private lateinit var database:DatabaseReference
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         // Inflate the layout for this fragment
@@ -46,8 +47,11 @@ class ChatsFragment : Fragment() {
                     list.clear()
                     for (dataSnapshot  in snapshot.children ){
                         val userModel = dataSnapshot.getValue(UserModel::class.java)
-                        userModel?.setUserId(dataSnapshot.key)
+                        if(dataSnapshot.key.toString() != FirebaseAuth.getInstance().uid.toString()){
+                            Log.d("@@@@",dataSnapshot.key.toString())
+                            userModel?.setUserId(dataSnapshot.key)
                             list.add(userModel!!)
+                        }
                     }
                     adapter.notifyDataSetChanged()
                 }else{

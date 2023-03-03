@@ -51,6 +51,9 @@ class MainActivity : AppCompatActivity() {
         TabLayoutMediator(tabLayout , viewPager2 , true) { tab , index ->
             tab.text = tabArray[index]
         }.attach()
+
+        //you can also this type code implement for tabLayout set to viewPager2
+
 //        tabLayout.addOnTabSelectedListener(object : OnTabSelectedListener{
 //            override fun onTabSelected(tab: TabLayout.Tab?) {
 //                if (tab != null) {
@@ -97,6 +100,9 @@ class MainActivity : AppCompatActivity() {
             R.id.logout->{
                 auth.signOut()
                 startActivity(Intent(this,SignInActivity::class.java))
+            }
+            R.id.groupChat->{
+                startActivity(Intent(this,GroupChatActivity::class.java))
             }
         }
         return super.onOptionsItemSelected(item)

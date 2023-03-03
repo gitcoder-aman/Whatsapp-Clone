@@ -13,7 +13,6 @@ import com.squareup.picasso.Picasso
 import com.tech.whatsappclone.ChatDetailActivity
 import com.tech.whatsappclone.Model.UserModel
 import com.tech.whatsappclone.R
-import kotlin.coroutines.coroutineContext
 
 class UserAdapter(private val dataset: ArrayList<UserModel>,val context: Context?) : RecyclerView.Adapter<UserAdapter.ViewHolder>() {
 
@@ -23,14 +22,11 @@ class UserAdapter(private val dataset: ArrayList<UserModel>,val context: Context
     }
 
     override fun getItemCount(): Int {
-        Log.d("@@@@","dataset size "+dataset.size.toString())
         return dataset.size
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val userModel : UserModel = dataset[position]
-        Log.d("@@@@","profilePic"+userModel.getProfilePic().toString())
-        Log.d("@@@@","username"+userModel.getUserName().toString())
         Picasso.get().load(userModel.getProfilePic())
             .placeholder(R.drawable.profile)
             .into(holder.profileImage)
