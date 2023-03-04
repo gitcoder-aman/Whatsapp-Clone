@@ -7,8 +7,15 @@ open class UserModel() {
     private var password : String ?= null
     private var userId : String ?= null
     private var lastMessage : String ?= null
+    private var about : String ?= null
 
 
+    fun setAbout(about:String?){
+        this.about = about
+    }
+    fun getAbout():String?{
+        return about
+    }
     fun getProfilePic(): String? {
         return profilePic
     }
@@ -50,12 +57,5 @@ open class UserModel() {
         var userName : String ?=null,
         var email : String ?=null,
         var password : String ?= null, )
-    data class UserData(
-        var profilePic : String ,
-        var userName : String,
-        var email : String ,
-        var password : String,
-        var userId : String ,
-        var lastMessage : String)
 }
 

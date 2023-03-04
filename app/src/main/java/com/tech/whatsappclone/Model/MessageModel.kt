@@ -4,6 +4,7 @@ class MessageModel {
     private var uid:String?=null
     private var message:String?=null
     private var timestamp:Long?=null
+    private var messageId:String?=null
 
     constructor(uid:String?,message:String?,timestamp:Long?){
         this.uid = uid
@@ -17,6 +18,13 @@ class MessageModel {
     }
 
     constructor()
+
+    fun setMessageId(messageId:String?){
+        this.messageId = messageId
+    }
+    fun getMessageId():String?{
+        return messageId
+    }
     fun setUid(uid: String?){
         this.uid = uid
     }

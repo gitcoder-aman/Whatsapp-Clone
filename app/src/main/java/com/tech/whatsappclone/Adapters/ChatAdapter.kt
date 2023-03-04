@@ -1,18 +1,23 @@
 package com.tech.whatsappclone.Adapters
 
 import android.content.Context
-import android.text.format.DateUtils
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
 import com.tech.whatsappclone.Model.MessageModel
 import com.tech.whatsappclone.R
-import java.util.Date
 
-class ChatAdapter(private var messageList: ArrayList<MessageModel>, var context: Context) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class ChatAdapter(
+    private var messageList: ArrayList<MessageModel>,
+    var context: Context,
+    private var receiverId: String?) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+
     private var SENDER_VIEW_TYPE = 1
     private var RECEIVER_VIEW_TYPE = 2
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -31,6 +36,35 @@ class ChatAdapter(private var messageList: ArrayList<MessageModel>, var context:
             (holder as SenderViewHolder).senderMsg.text = messageModel.getMessage()
         } else {
             (holder as ReceiverViewHolder).receiverMsg.text = messageModel.getMessage()
+        }
+
+        //delete chat on Long click listener
+        holder.itemView.setOnLongClickListener {
+            android.app.AlertDialog.Builder(context)
+                .setTitle("Delete")
+                .setMessage("Are you sure you want to delete this message")
+                .setPositiveButton(
+                    "yes"
+                ) { dialogInterface, i ->
+                    val database:FirebaseDatabase = FirebaseDatabase.getInstance()
+                    if(receiverId!=null){
+                        //personal chat delete
+                        val senderRoom:String = FirebaseAuth.getInstance().uid.toString()+receiverId
+                        Log.d("@@A",messageModel.getMessageId().toString())
+                        database.reference.child("chats").child(senderRoom)
+                            .child(messageModel.getMessageId().toString())
+                            .setValue(null)
+                    }else{
+                        //Group chat message delete
+                        database.reference.child("Group Chat")
+                            .child(messageModel.getMessageId().toString())
+                            .setValue(null)
+                    }
+                    Toast.makeText(context, "Delete message", Toast.LENGTH_SHORT).show()
+                }.setNegativeButton(
+                    "No"
+                ) { dialogInterface, i -> dialogInterface.dismiss() }.show()
+            false
         }
     }
 

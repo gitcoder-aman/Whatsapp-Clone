@@ -18,4 +18,12 @@
     <string name="todo">TODO</string>
     <string name="enter_your_message">Message</string>
     <string name="group_chat">Group Chats</string>
+    <string name="about">About</string>
+    <string name="save">Save</string>
+    <string name="privacy_policy">Privacy Policy</string>
+    <string name="about_us">About Us</string>
+    <string name="invite_a_friend">Invite a Friend</string>
+    <string name="notification">Notification</string>
+    <string name="help">Help</string>
+    <string name="enter_your_name">Enter Your Name</string>
 </resources>

@@ -1,6 +1,5 @@
 package com.tech.whatsappclone
 
-import android.R
 import android.app.Activity
 import android.app.ProgressDialog
 import android.content.Intent
@@ -9,16 +8,12 @@ import android.util.Log
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import com.google.android.gms.auth.api.identity.BeginSignInRequest
-import com.google.android.gms.auth.api.identity.SignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
-import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.gms.tasks.Task
-import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
@@ -54,7 +49,7 @@ class SignInActivity : AppCompatActivity() {
 
         // Initialize sign in options the client-id is copied form google-services.json file
         googleSignInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken(getString(com.tech.whatsappclone.R.string.default_web_client_id))
+            .requestIdToken(getString(R.string.default_web_client_id))
             .requestEmail()
             .build()
 
@@ -65,6 +60,15 @@ class SignInActivity : AppCompatActivity() {
         }
 
         binding.btnSignin.setOnClickListener {
+
+            if(binding.etemail.text.toString().isEmpty()|| binding.etemail.text.toString() == ""){
+                binding.etemail.error = "Enter your email"
+                return@setOnClickListener
+            }
+            if(binding.etpassword.text.toString().isEmpty()|| binding.etpassword.text.toString() == ""){
+                binding.etpassword.error = "Enter your password"
+                return@setOnClickListener
+            }
             mProgressDialog.show()
             auth.signInWithEmailAndPassword(
                 binding.etemail.text.toString(),
@@ -93,6 +97,7 @@ class SignInActivity : AppCompatActivity() {
 
     //Google Sign in code
     private fun signInGoogle() {
+        Log.d("@@@@L","SignInGoogle")
         val signInIntent = mGoogleSignInClient.signInIntent
         launcher.launch(signInIntent)
     }
@@ -141,7 +146,7 @@ class SignInActivity : AppCompatActivity() {
                 val userModel = UserModel()
                 userModel.setUserId(user?.uid)
                 userModel.setUserName(user?.displayName)
-                userModel.setProfilePic(user?.photoUrl.toString())
+//                userModel.setProfilePic(user?.photoUrl.toString())
 
                 database.reference.child("Users").child(user?.uid.toString()).setValue(userModel)
             } else {

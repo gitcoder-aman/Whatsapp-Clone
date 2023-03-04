@@ -9,6 +9,11 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import com.squareup.picasso.Picasso
 import com.tech.whatsappclone.ChatDetailActivity
 import com.tech.whatsappclone.Model.UserModel
@@ -33,6 +38,24 @@ class UserAdapter(private val dataset: ArrayList<UserModel>,val context: Context
 
         holder.txtUsername.text = userModel.getUserName()
 
+        //last message set on chat fragment
+        FirebaseDatabase.getInstance().reference.child("chats")
+            .child(FirebaseAuth.getInstance().uid+userModel.getUserId())
+            .orderByChild("timestamp").limitToLast(1).addListenerForSingleValueEvent(object:ValueEventListener{
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    if(snapshot.hasChildren()){
+                        for(dataSnapshot : DataSnapshot in snapshot.children){
+                            holder.txtLastMessage.text = dataSnapshot.child("message").value.toString()
+                        }
+                    }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    Log.d("@@@@","timestamp on Cancelled")
+                }
+
+            })
+
         holder.itemView.setOnClickListener {
             val intent = Intent(context,ChatDetailActivity::class.java)
             intent.putExtra("userId",userModel.getUserId())
@@ -46,7 +69,7 @@ class UserAdapter(private val dataset: ArrayList<UserModel>,val context: Context
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view){
          val profileImage:ImageView
          val txtUsername : TextView
-         private val txtLastMessage : TextView
+         val txtLastMessage : TextView
 
         init {
             profileImage = view.findViewById(R.id.profile_image)

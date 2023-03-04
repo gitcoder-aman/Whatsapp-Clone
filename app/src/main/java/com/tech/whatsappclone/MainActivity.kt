@@ -1,19 +1,12 @@
 package com.tech.whatsappclone
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.KeyEvent
 import android.view.Menu
-import android.view.MenuInflater
 import android.view.MenuItem
-import android.widget.TableLayout
-import android.widget.Toast
-import androidx.core.app.NavUtils
+import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager2.widget.ViewPager2
-import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 import com.google.android.material.tabs.TabLayout
-import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import com.google.android.material.tabs.TabLayoutMediator
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
@@ -95,7 +88,7 @@ class MainActivity : AppCompatActivity() {
 
         when(item.itemId){
             R.id.setting->{
-                Toast.makeText(this, "settings in future", Toast.LENGTH_SHORT).show()
+                startActivity(Intent(this,SettingActivity::class.java))
             }
             R.id.logout->{
                 auth.signOut()
@@ -108,7 +101,11 @@ class MainActivity : AppCompatActivity() {
         return super.onOptionsItemSelected(item)
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onBackPressed() {
-        super.onBackPressed()
+        val a = Intent(Intent.ACTION_MAIN)
+        a.addCategory(Intent.CATEGORY_HOME)
+        a.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        startActivity(a)
     }
 }

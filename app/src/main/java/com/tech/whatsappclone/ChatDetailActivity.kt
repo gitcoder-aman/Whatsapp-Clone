@@ -34,7 +34,7 @@ class ChatDetailActivity : AppCompatActivity() {
         auth = FirebaseAuth.getInstance()
 
         val senderId : String = auth.uid.toString()
-        var receiverId = intent.getStringExtra("userId")
+        val receiverId = intent.getStringExtra("userId")
         val userName = intent.getStringExtra("username")
         val profilePic = intent.getStringExtra("profilePic")
 
@@ -47,10 +47,10 @@ class ChatDetailActivity : AppCompatActivity() {
             startActivity(Intent(this,MainActivity::class.java))
         }
         val messageArrayList:ArrayList<MessageModel> = ArrayList()
-        val chatAdapter:ChatAdapter = ChatAdapter(messageArrayList,this)
+        val chatAdapter = ChatAdapter(messageArrayList, this, receiverId.toString())
         binding.chatRecyclerView.adapter = chatAdapter
 
-        val linearLayoutManager:LinearLayoutManager = LinearLayoutManager(this)
+        val linearLayoutManager = LinearLayoutManager(this)
         binding.chatRecyclerView.layoutManager = linearLayoutManager
 
         val senderRoom:String = senderId+receiverId
@@ -58,6 +58,10 @@ class ChatDetailActivity : AppCompatActivity() {
         //send button on Click
         binding.sendBtn.setOnClickListener {
            val message = binding.etMessage.text.toString()
+            if(message==""||message.isEmpty()){
+                binding.etMessage.error = "Type any message."
+                return@setOnClickListener
+            }
             val messageModel = MessageModel(senderId,message)
             messageModel.setTimestamp(Date().time)
             binding.etMessage.setText("")
@@ -86,6 +90,7 @@ class ChatDetailActivity : AppCompatActivity() {
                     messageArrayList.clear()
                     for(dataSnapshot:DataSnapshot in snapshot.children){
                         val messageModel = dataSnapshot.getValue(MessageModel::class.java)
+                        messageModel?.setMessageId(dataSnapshot.key) //message key set (push wala key)
                         if (messageModel != null) {
                             messageArrayList.add(messageModel)
                         }
@@ -101,6 +106,6 @@ class ChatDetailActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
-        super.onBackPressed()
+        startActivity(Intent(this,MainActivity::class.java))
     }
 }

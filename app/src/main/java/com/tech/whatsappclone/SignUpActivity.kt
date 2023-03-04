@@ -61,6 +61,19 @@ class SignUpActivity : AppCompatActivity() {
         database = FirebaseDatabase.getInstance()
 
         binding.btnSignup.setOnClickListener {
+
+            if(binding.etemail.text.toString().isEmpty()|| binding.etemail.text.toString() == ""){
+                binding.etemail.error = "Enter your email"
+                return@setOnClickListener
+            }
+            if(binding.etpassword.text.toString().isEmpty()|| binding.etpassword.text.toString() == ""){
+                binding.etpassword.error = "Enter your password"
+                return@setOnClickListener
+            }
+            if(binding.etuserName.text.toString().isEmpty()|| binding.etuserName.text.toString() == ""){
+                binding.etuserName.error = "Enter your Username"
+                return@setOnClickListener
+            }
             mProgressDialog.show()
             auth.createUserWithEmailAndPassword(
                 binding.etemail.text.toString(),
@@ -157,7 +170,7 @@ class SignUpActivity : AppCompatActivity() {
                 val userModel = UserModel()
                 userModel.setUserId(user?.uid)
                 userModel.setUserName(user?.displayName)
-                userModel.setProfilePic(user?.photoUrl.toString())
+//                userModel.setProfilePic(user?.photoUrl.toString())
 
                 database.reference.child("Users").child(user?.uid.toString()).setValue(userModel)
             } else {
